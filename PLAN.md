@@ -108,6 +108,7 @@ digitlab/
 - [x] web/ app — browser e2e verified (hook + real pointer + button click; canvas ink pixel-verified)
 - [x] Hosting — LIVE at https://aliomarabdelhady.github.io/digitlab/ (repo AliOmarAbdelhady/digitlab, gh-pages branch; production e2e re-verified)
 - [x] mobile/ Expo SDK 57 app (RN 0.86) — TS clean, Metro bundle OK (1.7MB hbc)
-- [ ] APK build (gradle assembleRelease, running) + adb install + host APK
-- [ ] REPORT.md + READMEs (drafted; final numbers await Kaggle runs)
-- [ ] User runs Kaggle notebooks → replaces models/*.json → rebuild apps (README explains)
+- [x] APK built (arm64-v8a, 35.5MB, debug-signed release) + INSTALLED on user's phone (SM-A525F, Android 14) — verified live: user drew "9" → MLP predicted 9 @ 91.6%
+- [x] APK hosted: https://aliomarabdelhady.github.io/digitlab/digitlab.apk (+ download chip in web footer)
+- [x] REPORT.md + READMEs (final numbers await Kaggle runs; REPORT ROW mechanism documented)
+- [ ] User runs Kaggle notebooks → replaces models/*.json → `web npm run sync && build` + `mobile npm run sync` + rebuild APK + `tools/deploy-pages.sh`
