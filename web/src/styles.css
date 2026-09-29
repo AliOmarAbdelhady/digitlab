@@ -405,6 +405,25 @@ body {
   color: var(--text-dim);
 }
 .footer-dim { color: var(--text-faint); }
+.footer-apk { margin-bottom: 12px; }
+.apk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d9f6ff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  background: rgba(34, 211, 238, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.apk-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(34, 150, 238, 0.25);
+}
 
 .toast {
   position: fixed;

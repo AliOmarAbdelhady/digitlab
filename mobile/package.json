@@ -1,0 +1,26 @@
+{
+  "name": "digitlab-mobile",
+  "version": "1.0.0",
+  "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
+    "@expo-google-fonts/space-grotesk": "^0.4.1",
+    "expo": "~57.0.25",
+    "expo-asset": "~57.0.18",
+    "expo-font": "~57.0.4",
+    "expo-haptics": "~57.0.3",
+    "expo-linear-gradient": "~57.0.2",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-svg": "15.15.4"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-models.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "private": true
+}

@@ -101,11 +101,13 @@ digitlab/
 ## Status log
 
 - [x] Recon: env + dataset verified (hojjatk/mnist-dataset, mnist_png/training|testing/<d>/*.png)
-- [x] Scaffold + PLAN.md
-- [ ] Local python env (uv, bg install)
-- [ ] Notebook sources (3) + smoke test + .ipynb conversion
-- [ ] core/ TS engines + fixtures + tests
-- [ ] web/ app + browser test
-- [ ] Hosting (gh-pages)
-- [ ] mobile/ Expo app + APK + install
-- [ ] REPORT.md + READMEs
+- [x] Local python env (uv venv, torch-cpu 2.14, sklearn 1.9, MNIST idx)
+- [x] Notebook sources (3) — SMOKE PASSED end-to-end incl. export parity (100% for all 3)
+- [x] .ipynb built (kaggle/0{1,2,3}_*.ipynb) via tools/build_notebooks.py
+- [x] core/ TS engines + fixtures + tests — 12/12 passing (parity ≥99.6% argmax, <1e-3 prob diff)
+- [x] web/ app — browser e2e verified (hook + real pointer + button click; canvas ink pixel-verified)
+- [x] Hosting — LIVE at https://aliomarabdelhady.github.io/digitlab/ (repo AliOmarAbdelhady/digitlab, gh-pages branch; production e2e re-verified)
+- [x] mobile/ Expo SDK 57 app (RN 0.86) — TS clean, Metro bundle OK (1.7MB hbc)
+- [ ] APK build (gradle assembleRelease, running) + adb install + host APK
+- [ ] REPORT.md + READMEs (drafted; final numbers await Kaggle runs)
+- [ ] User runs Kaggle notebooks → replaces models/*.json → rebuild apps (README explains)

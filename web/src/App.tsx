@@ -186,11 +186,23 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        trained on MNIST (60k) · Kaggle notebooks in the repo ·{" "}
-        <span className="footer-dim">
-          SVC / MLP / CNN exported to a portable JSON format, executed by a
-          hand-written JS inference core
-        </span>
+        <div className="footer-apk">
+          <a className="apk-chip" href="digitlab.apk" download>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <rect x="7" y="2.5" width="10" height="19" rx="2.2" />
+              <path d="M10.5 5.5h3" />
+              <path d="M12 17.2v-6.4m0 0l-2.2 2.2M12 10.8l2.2 2.2" />
+            </svg>
+            Get the Android app (APK)
+          </a>
+        </div>
+        <div>
+          trained on MNIST (60k) · Kaggle notebooks in the repo ·{" "}
+          <span className="footer-dim">
+            SVC / MLP / CNN exported to a portable JSON format, executed by a
+            hand-written JS inference core
+          </span>
+        </div>
       </footer>
 
       {toast && (
