@@ -2,20 +2,21 @@
 
 Three self-contained notebooks that train the three MNIST models on the
 **[`hojjatk/mnist-dataset`](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)**
-dataset (the canonical full MNIST — 60,000 training + 10,000 test 28×28 PNGs):
+dataset (the canonical full MNIST — 60,000 training + 10,000 test 28×28 images,
+shipped as the **original IDX binary files**):
 
 | notebook | model | framework | accelerator | approx. runtime |
 |---|---|---|---|---|
 | `01_classical_svm.ipynb` | RBF-SVM (`sklearn.svm.SVC`) + LogReg/RF baselines | scikit-learn | CPU | 1.5–2.5 h |
-| `02_neural_network_mlp.ipynb` | Multi-layer perceptron (dense only) | PyTorch | GPU T4/P100 (CPU ok) | ~20 min GPU |
-| `03_cnn.ipynb` | Intro 2-block CNN | PyTorch | GPU T4/P100 (CPU ok) | ~15 min GPU |
+| `02_neural_network_mlp.ipynb` | Multi-layer perceptron (dense only) | PyTorch | GPU T4/P100 (CPU ok) | ~25 min GPU |
+| `03_cnn.ipynb` | Intro 2-block CNN | PyTorch | GPU T4/P100 (CPU ok) | ~20 min GPU |
 
 ## How to run (each notebook)
 
 1. On Kaggle: **Create Notebook** → **File → Import Notebook** → upload the `.ipynb`.
-2. **Add Input → Datasets** → search **"MNIST Dataset"** by **hojjatk** (60k train / 10k
-   test, PNG) → attach it. The loader auto-discovers it at
-   `/kaggle/input/mnist-dataset/mnist_png/{training,testing}/<0..9>/*.png`.
+2. **Add Input → Datasets** → search **"MNIST Dataset"** by **hojjatk** → attach it.
+   It mounts at `/kaggle/input/mnist-dataset/`; the loader parses the canonical
+   IDX files directly (it also accepts PNG folder-per-class mirrors unchanged).
 3. For notebooks 2 and 3: **Settings → Accelerator → GPU T4 x2** (or P100).
    Notebook 1 is fine on CPU.
 4. **Run All**. Every notebook ends having written its artifacts to

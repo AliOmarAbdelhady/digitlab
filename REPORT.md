@@ -12,11 +12,13 @@
 ## 1 · Dataset
 
 **Kaggle dataset: [`hojjatk/mnist-dataset`](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)**
-— the canonical MNIST database as PNGs: **60,000 training + 10,000 test** images,
-28×28 grayscale, digit white on black, one folder per class
-(`mnist_png/{training,testing}/<0..9>/*.png`). Chosen over the 42k-row
-Digit-Recognizer CSV because it provides the full 60k training images (more data →
-better models) plus the untouched official 10k test set for final evaluation.
+— the canonical MNIST database in its **original IDX binary format**: **60,000
+training + 10,000 test** images, 28×28 grayscale, digit white on black
+(`train-images.idx3-ubyte`, `train-labels.idx1-ubyte`, `t10k-images.idx3-ubyte`,
+`t10k-labels.idx1-ubyte`). Chosen because it is the full canonical MNIST — the
+complete 60k training images (more data → better models) plus the untouched
+official 10k test set for final evaluation. The loader also accepts PNG
+folder-per-class mirrors unchanged (verified on a local PNG mirror in testing).
 
 ## 2 · Data preprocessing
 
@@ -79,9 +81,11 @@ inside the notebooks, plus the TypeScript test-suite in `core/`).
 - **Final run**: winner retrained from scratch, ≤60 epochs, **early stopping**
   (patience 8 on val accuracy, min-delta 2e-4, best-weights restore) + light
   augmentation. Training curves saved to `figures/mlp_curves.png`.
-- **Chosen hyperparameters**: hidden `⟨fill⟩`, dropout `⟨fill⟩`, lr `⟨fill⟩`,
-  batch `⟨fill⟩`, wd `⟨fill⟩`; stopped at epoch `⟨fill⟩` (best epoch `⟨fill⟩`,
-  train−val gap `⟨fill⟩` pts).
+- **Chosen hyperparameters**: hidden `(512, 256)`, dropout `0.20`, lr `1e-3`,
+  batch `128`, wd `1e-4` (config `mlp-01`); early-stopped at epoch `34`, best
+  epoch `26`, train−val gap `+0.30 pts`.
+- **Result**: **test accuracy 99.070%**, macro F1 99.061% · 537,354 params ·
+  41 s fit (T4) · 0.28 ms/sample batch inference.
 
 ## 5 · Model 3 — Deep Learning CV: Convolutional Neural Network
 
@@ -96,8 +100,12 @@ inside the notebooks, plus the TypeScript test-suite in `core/`).
   (0.15/0.25/0.35), width (32/48), batch (64/128/256).
 - **Final run**: winner retrained, ≤40 epochs, **early stopping** (patience 5,
   best-weights restore) + strong affine augmentation.
-- **Chosen hyperparameters**: width `⟨fill⟩`, dropout `⟨fill⟩`, lr `⟨fill⟩`,
-  batch `⟨fill⟩`; stopped at epoch `⟨fill⟩` (best epoch `⟨fill⟩`).
+- **Chosen hyperparameters**: width `48` (750,234 params), dropout `0.25`,
+  lr `1e-3`, batch `128` (config `cnn-07`); early-stopped at epoch `24`, best
+  epoch `19`, train−val gap `−0.16 pts` (validation ≥ train — the strong
+  augmentation keeps the training split harder than the clean validation data).
+- **Result**: **test accuracy 99.570%**, macro F1 99.568% · 164 s fit (T4) ·
+  0.75 ms/sample batch inference.
 
 ## 6 · Results & comparison
 
@@ -105,11 +113,11 @@ Paste the `REPORT ROW` lines printed by the notebooks:
 
 | model | test accuracy | macro F1 | notes (params · epochs · fit time) |
 |---|---|---|---|
-| LogisticRegression (baseline) | ⟨fill⟩ | ⟨fill⟩ | context only |
-| RandomForest-300 (baseline) | ⟨fill⟩ | ⟨fill⟩ | context only |
+| LogisticRegression (baseline) | ⟨fill from SVM notebook⟩ | ⟨fill⟩ | context only |
+| RandomForest-300 (baseline) | ⟨fill from SVM notebook⟩ | ⟨fill⟩ | context only |
 | **SVC (RBF)** | ⟨fill⟩ | ⟨fill⟩ | ⟨fill⟩ SVs |
-| **MLP** | ⟨fill⟩ | ⟨fill⟩ | ⟨fill⟩ |
-| **CNN** | ⟨fill⟩ | ⟨fill⟩ | ⟨fill⟩ |
+| **MLP** | **99.070%** | 99.061% | 537,354 params · best ep 26/34 · 41 s (T4) |
+| **CNN** | **99.570%** | 99.568% | 750,234 params · best ep 19/24 · 164 s (T4) |
 
 Expected magnitudes (full 60k training): SVM ≈ 98.4–98.7%, MLP ≈ 98.2–98.6%,
 CNN ≈ 99.4–99.6%. Each notebook also produces per-class precision/recall/F1,
