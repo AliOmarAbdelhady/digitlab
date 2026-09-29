@@ -31,10 +31,12 @@ export interface DigitModel {
 
 /** Wrap a raw predict into the Prediction interface (timing + argmax). */
 function withMeta(kind: DigitModel["kind"], classes: number[],
+                  metrics: Record<string, any> | undefined,
                   predict: (x: Float32Array) => number[]): DigitModel {
   return {
     kind,
     classes,
+    metrics,
     predict,
     predictFull(x784: Float32Array): Prediction {
       const t0 =
@@ -56,11 +58,11 @@ export function loadModel(json: ModelJson): DigitModel {
   if (json.format !== "digitlab-model") throw new Error("not a digitlab model");
   switch (json.kind) {
     case "svc":
-      return withMeta("svc", json.classes, createSvcEngine(json.model));
+      return withMeta("svc", json.classes, json.metrics, createSvcEngine(json.model));
     case "mlp":
-      return withMeta("mlp", json.classes, createMlpEngine(json.model));
+      return withMeta("mlp", json.classes, json.metrics, createMlpEngine(json.model));
     case "cnn":
-      return withMeta("cnn", json.classes, createCnnEngine(json.model));
+      return withMeta("cnn", json.classes, json.metrics, createCnnEngine(json.model));
     default:
       throw new Error(`unknown kind ${json.kind}`);
   }
