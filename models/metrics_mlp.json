@@ -296,8 +296,8 @@
     "best_epoch": 6,
     "epochs_run": 6,
     "train_val_gap_at_best": -0.002083333333333326,
-    "fit_seconds": 171.084873581,
-    "latency_ms_per_sample": 25.070665959997314,
+    "fit_seconds": 71.09434626299844,
+    "latency_ms_per_sample": 1.2959275799948955,
     "params": 537354
   },
   "curves": {
@@ -346,6 +346,6 @@
     "pt": "models/mlp_mnist.pt",
     "json": "models/mlp_mnist.json",
     "pt_sha256_16": "8294c53e9087a8ca",
-    "json_sha256_16": "e686a3b9bc480b08"
+    "json_sha256_16": "f9330b573fad4d23"
   }
 }

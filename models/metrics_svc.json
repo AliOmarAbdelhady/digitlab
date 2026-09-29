@@ -216,9 +216,9 @@
         54
       ]
     ],
-    "fit_seconds": 1.8382450160002008,
+    "fit_seconds": 1.098648717999822,
     "n_support_vectors": 1458,
-    "latency_ms_per_sample": 2.7968065983327506
+    "latency_ms_per_sample": 0.9329688066676075
   },
   "ovr_svc": {
     "accuracy": 0.9333333333333333,
@@ -432,21 +432,21 @@
       "model": "LogisticRegression",
       "test_acc": 0.9033333333333333,
       "macro_f1": 0.9025944434094336,
-      "fit_s": 16.142711955000323,
-      "lat_ms_per_sample": 0.011669226666981558
+      "fit_s": 10.775232021000193,
+      "lat_ms_per_sample": 0.003127858332542625
     },
     {
       "model": "RandomForest(300)",
       "test_acc": 0.9433333333333334,
       "macro_f1": 0.943129487247265,
-      "fit_s": 3.409059664000324,
-      "lat_ms_per_sample": 0.3107557199996336
+      "fit_s": 1.9832053520003683,
+      "lat_ms_per_sample": 0.18273788666495724
     }
   ],
   "artifacts": {
     "joblib": "models/svc_mnist.joblib",
     "json": "models/svc_mnist.json",
     "joblib_sha256_16": "b47eec98a1abb7d4",
-    "json_sha256_16": "a1efb7d2b54962bb"
+    "json_sha256_16": "05dfb21bd1adaa3e"
   }
 }

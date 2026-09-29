@@ -5,13 +5,19 @@
 #
 # ### Dataset
 # - **Kaggle dataset:** [`hojjatk/mnist-dataset`](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)
-#   ("The MNIST Database") — the canonical full MNIST: **60,000 training + 10,000 test**
-#   28×28 grayscale PNGs, digit *white on black*, one folder per class:
-#   `/kaggle/input/mnist-dataset/mnist_png/{training,testing}/<0..9>/*.png`
-# - Attach it via **Add Input → Datasets → "MNIST Dataset" (hojjatk)**.
+#   ("The MNIST Database") — the canonical full MNIST as the **original IDX
+#   binary files**: 60,000 training + 10,000 test 28×28 grayscale images
+#   (`train-images.idx3-ubyte`, `train-labels.idx1-ubyte`, `t10k-images.idx3-ubyte`,
+#   `t10k-labels.idx1-ubyte`), digit white on black.
+# - Attach it via **Add Input → Datasets → "MNIST Dataset" (hojjatk)**; it mounts
+#   at `/kaggle/input/mnist-dataset/`.
+# - The loader auto-discovers the data in either form: a PNG folder-per-class
+#   tree (`training/<0..9>/*.png`) or the canonical IDX files (one or two
+#   directory levels deep, either filename spelling) — it works unchanged with
+#   any faithful MNIST mirror.
 #
 # ### Preprocessing (identical for training AND serving in the apps)
-# 1. Load PNG → 28×28 uint8 array `[0..255]`, flatten to 784.
+# 1. Parse IDX (or PNGs) → 28×28 uint8 arrays `[0..255]`, flattened to 784.
 # 2. Scale to `float32` in `[0,1]` (**÷255**). No mean/std standardization — this keeps
 #    the exact same numeric pipeline trivially reproducible in the JavaScript inference
 #    core used by the web/mobile apps (train/serve parity).
@@ -55,8 +61,8 @@ def sz(n: int) -> int:
 from PIL import Image
 
 def _find_split_dirs(root: str):
-    """Auto-discover `training` and `testing` digit-folder trees under `root`.
-    Robust to the exact intermediate folder name (mnist_png/...)."""
+    """Auto-discover `training`/`testing` (or train/test) digit-folder PNG trees
+    under `root` — used when a dataset ships PNGs (folder-per-class layout)."""
     found = {}
     if not os.path.isdir(root):
         return found
@@ -94,22 +100,56 @@ def _load_png_split(dirpath: str):
 
 def _load_idx_images(path: str) -> np.ndarray:
     with open(path, "rb") as f:
-        head = f.read(16)
-        magic, n, h, w = np.frombuffer(head, dtype=">u4")
+        magic, n, h, w = np.frombuffer(f.read(16), dtype=">u4")
         assert magic == 2051, f"bad magic in {path}"
         return np.frombuffer(f.read(n * h * w), dtype=np.uint8).reshape(n, 784)
 
 def _load_idx_labels(path: str) -> np.ndarray:
     with open(path, "rb") as f:
-        head = f.read(8)
-        magic, n = np.frombuffer(head, dtype=">u4")
+        magic, n = np.frombuffer(f.read(8), dtype=">u4")
         assert magic == 2049, f"bad magic in {path}"
         return np.frombuffer(f.read(n), dtype=np.uint8).astype(np.int64)
 
+# canonical MNIST IDX filenames — datasets use either spelling, sometimes
+# nested one directory deep (e.g. hojjatk/mnist-dataset ships both variants)
+_IDX_NAMES = {
+    "trX": ["train-images-idx3-ubyte", "train-images.idx3-ubyte"],
+    "trY": ["train-labels-idx1-ubyte", "train-labels.idx1-ubyte"],
+    "teX": ["t10k-images-idx3-ubyte", "t10k-images.idx3-ubyte"],
+    "teY": ["t10k-labels-idx1-ubyte", "t10k-labels.idx1-ubyte"],
+}
+
+def _find_idx_files():
+    """Locate the 4 canonical IDX files. Search order: $DIGITLAB_IDX_DIR,
+    /kaggle/input/** (attached Kaggle datasets — one or two levels deep),
+    ./local/data/mnist (local mirror)."""
+    candidates = [os.environ.get("DIGITLAB_IDX_DIR"), "local/data/mnist"]
+    if os.path.isdir("/kaggle/input"):
+        for d in sorted(os.listdir("/kaggle/input")):
+            candidates.append(f"/kaggle/input/{d}")
+        candidates.append("/kaggle/input")
+    for c in candidates:
+        if not c or not os.path.isdir(c):
+            continue
+        bases = [c] + [os.path.join(c, d) for d in sorted(os.listdir(c))
+                       if os.path.isdir(os.path.join(c, d))]
+        paths = {}
+        for key, alts in _IDX_NAMES.items():
+            for base in bases:
+                hit = next((os.path.join(base, n) for n in alts
+                            if os.path.isfile(os.path.join(base, n))), None)
+                if hit:
+                    paths[key] = hit
+                    break
+        if len(paths) == 4:
+            return paths
+    return None
+
 def load_mnist():
     """Return X_train, y_train, X_test, y_test as uint8 arrays (N,784)/(N,).
-    Resolution order: env override → /kaggle/input (attached Kaggle dataset)
-    → ./local/data/pngtree (local mirror of the Kaggle layout) → raw IDX files."""
+    Resolution order: explicit env override → attached Kaggle dataset (PNG
+    folder-per-class tree, else canonical IDX files) → local PNG mirror →
+    local IDX mirror."""
     candidates = []
     env_tr, env_te = os.environ.get("DIGITLAB_TRAIN_DIR"), os.environ.get("DIGITLAB_TEST_DIR")
     if env_tr and env_te:
@@ -126,12 +166,16 @@ def load_mnist():
             Xte, yte = _load_png_split(dirs["test"])
             break
     else:
-        idx_dir = os.environ.get("DIGITLAB_IDX_DIR", "local/data/mnist")
-        log(f"[data] PNG tree not found — falling back to IDX files in {idx_dir}")
-        Xtr = _load_idx_images(f"{idx_dir}/train-images-idx3-ubyte")
-        ytr = _load_idx_labels(f"{idx_dir}/train-labels-idx1-ubyte")
-        Xte = _load_idx_images(f"{idx_dir}/t10k-images-idx3-ubyte")
-        yte = _load_idx_labels(f"{idx_dir}/t10k-labels-idx1-ubyte")
+        idx = _find_idx_files()
+        if idx is None:
+            raise RuntimeError(
+                "MNIST not found — attach the Kaggle dataset 'hojjatk/mnist-dataset' "
+                "(canonical IDX files) or point DIGITLAB_IDX_DIR at an IDX folder.")
+        log(f"[data] loading canonical IDX files: { {k: os.path.basename(os.path.dirname(p)) or p for k, p in idx.items()} }")
+        Xtr = _load_idx_images(idx["trX"])
+        ytr = _load_idx_labels(idx["trY"])
+        Xte = _load_idx_images(idx["teX"])
+        yte = _load_idx_labels(idx["teY"])
 
     if SMOKE:  # stratified subsample for fast local end-to-end testing
         rng = np.random.default_rng(SEED)
@@ -154,6 +198,7 @@ if SMOKE: matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 os.makedirs("figures", exist_ok=True)
+os.makedirs("models", exist_ok=True)
 
 def eda_overview(X, y, tag="train"):
     """Sample grid + class distribution — dataset sanity check."""

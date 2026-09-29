@@ -270,8 +270,8 @@
     "best_epoch": 4,
     "epochs_run": 4,
     "train_val_gap_at_best": -0.03249999999999997,
-    "fit_seconds": 151.5370548990004,
-    "latency_ms_per_sample": 196.38994715999615,
+    "fit_seconds": 47.8644207189991,
+    "latency_ms_per_sample": 30.570160010011023,
     "params": 468458
   },
   "curves": {
@@ -310,6 +310,6 @@
     "pt": "models/cnn_mnist.pt",
     "json": "models/cnn_mnist.json",
     "pt_sha256_16": "4e5da4a6bb690294",
-    "json_sha256_16": "4fc2cb2c752de8c5"
+    "json_sha256_16": "7ec7d6e474b41ff5"
   }
 }
