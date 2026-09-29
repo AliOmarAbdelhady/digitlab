@@ -1,0 +1,17 @@
+{
+  "name": "@digitlab/core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portable MNIST inference core: drawing→784 preprocessing + SVC/MLP/CNN engines (no runtime deps, browser/Hermets-safe)",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "digitlab-web",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "sync": "node scripts/sync-models.mjs",
+    "dev": "node scripts/sync-models.mjs && vite",
+    "build": "node scripts/sync-models.mjs && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1"
+  },
+  "private": true
+}

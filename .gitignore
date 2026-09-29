@@ -1,0 +1,29 @@
+# python / local testing
+local/
+__pycache__/
+*.pyc
+.venv/
+
+# models: portable JSON app models ARE committed; heavy framework files are not
+models/*.joblib
+models/*.pt
+models/*.onnx
+
+# node
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+npm-debug.log*
+
+# expo / android
+.expo/
+android/.gradle/
+android/app/build/
+android/build/
+*.apk.orig
+*.hprof
+
+# misc
+.DS_Store
+*.log
