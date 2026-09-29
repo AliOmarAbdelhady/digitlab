@@ -100,15 +100,16 @@ digitlab/
 
 ## Status log
 
-- [x] Recon: env + dataset verified (hojjatk/mnist-dataset, mnist_png/training|testing/<d>/*.png)
-- [x] Local python env (uv venv, torch-cpu 2.14, sklearn 1.9, MNIST idx)
-- [x] Notebook sources (3) — SMOKE PASSED end-to-end incl. export parity (100% for all 3)
-- [x] .ipynb built (kaggle/0{1,2,3}_*.ipynb) via tools/build_notebooks.py
-- [x] core/ TS engines + fixtures + tests — 12/12 passing (parity ≥99.6% argmax, <1e-3 prob diff)
-- [x] web/ app — browser e2e verified (hook + real pointer + button click; canvas ink pixel-verified)
-- [x] Hosting — LIVE at https://aliomarabdelhady.github.io/digitlab/ (repo AliOmarAbdelhady/digitlab, gh-pages branch; production e2e re-verified)
-- [x] mobile/ Expo SDK 57 app (RN 0.86) — TS clean, Metro bundle OK (1.7MB hbc)
-- [x] APK built (arm64-v8a, 35.5MB, debug-signed release) + INSTALLED on user's phone (SM-A525F, Android 14) — verified live: user drew "9" → MLP predicted 9 @ 91.6%
-- [x] APK hosted: https://aliomarabdelhady.github.io/digitlab/digitlab.apk (+ download chip in web footer)
-- [x] REPORT.md + READMEs (final numbers await Kaggle runs; REPORT ROW mechanism documented)
-- [ ] User runs Kaggle notebooks → replaces models/*.json → `web npm run sync && build` + `mobile npm run sync` + rebuild APK + `tools/deploy-pages.sh`
+- [x] Recon: env + dataset verified (hojjatk/mnist-dataset — canonical IDX files, NOT PNGs)
+- [x] Notebooks + core + web + mobile + APK + hosting (see git history for details)
+- [x] **Official Kaggle MCP installed** (`~/.zcode/cli/config.json` → mcp.servers.kaggle,
+      https://www.kaggle.com/mcp, KGAT bearer auth) + CLI token at ~/.kaggle/access_token.
+      MCP save_notebook does NOT persist datasetDataSources → pushes done via official
+      kaggle CLI (kernel-metadata.json, dataset_sources works); MCP used for quota/status/logs/downloads.
+- [x] **Trained on Kaggle** (kernel owner aliomarsaleh): MLP v5 99.07% · CNN v4 99.57% ·
+      SVM v3 97.57/97.65%; artifacts downloaded via MCP download_notebook_output (signed URLs)
+- [x] Real models swapped into web (deployed) + APK (rebuilt 40.7MB, hosted; phone was
+      disconnected at install time — reinstall pending reconnect)
+- [x] core metrics passthrough fix (accuracy badges) — live verified
+- [~] SVM v4 refinement (25k subsample × 16 iter search) — running on Kaggle; watcher:
+      local/kaggle_output/svc_v4/ ; swap if canonical > 97.57%

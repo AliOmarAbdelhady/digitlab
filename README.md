@@ -82,12 +82,17 @@ own phone, not for store distribution.
 
 - `tools/smoke.sh` — all three notebook pipelines end-to-end on a small subset,
   including the export-parity asserts (JSON recompute vs framework predictions).
-- `core/` — `npm test`: 12/12 passing; engines match Python-computed predictions
-  on 256 fixed MNIST test images (≥99.6% argmax agreement, prob diff < 1e-3).
-- Web app — browser-automated e2e: synthetic strokes for 3/1/7/0 recognized by
-  all three models; real pointer drawing + real button click verified; canvas
-  ink verified at pixel level; deployed site re-verified in production.
-- Mobile — TypeScript-clean, Metro bundle builds (Hermes), APK via Gradle.
+- **Real training ran on Kaggle** via the official Kaggle MCP server
+  (`https://www.kaggle.com/mcp`, installed in `~/.zcode/cli/config.json`) +
+  the official CLI: MLP **99.07%**, CNN **99.57%**, SVC **97.57/97.65%** on the
+  official 10k test set. Full search tables in `models/metrics_*.json`.
+- `core/` — `npm test`: 12/12 passing against the REAL models; engines match
+  the frameworks' predictions on 256 fixed MNIST test images.
+- Web app — browser-automated e2e: digits 3/1/7/0 recognized by all three real
+  models on the production URL; real pointer drawing + button click verified.
+- Mobile — TypeScript-clean, Metro bundle builds (Hermes), release APK built
+  via Gradle with the real models bundled, installed + verified on a Galaxy A52
+  (finger-drawn "9" → MLP predicted 9 @ 91.6% on the earlier demo build).
 
 ## 5 · Swapping in the real Kaggle models
 

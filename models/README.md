@@ -3,26 +3,32 @@
 The apps (web + mobile) load models from the **portable DigitLab JSON format**
 produced by the Kaggle notebooks (see `kaggle/README.md`).
 
-| file | used by | produced by |
-|---|---|---|
-| `svc_mnist.json` | apps — RBF-SVM engine (uint8 support vectors + dual coefficients) | `01_classical_svm.ipynb` |
-| `mlp_mnist.json` | apps — dense MLP weights (BatchNorm folded) | `02_neural_network_mlp.ipynb` |
-| `cnn_mnist.json` | apps — CNN ops list (conv/relu/pool/linear, BatchNorm folded) | `03_cnn.ipynb` |
-| `*.joblib`, `*.pt` | framework-standard deliverables (not used by the apps) | same notebooks — download from Kaggle Output, not committed to git |
+## ✅ Current contents: REAL models trained on Kaggle
 
-## ⚠️ Current contents: DEMO models
+All three files below are the **actual full-training runs on Kaggle** (dataset
+`hojjatk/mnist-dataset`, 60k train / 10k test), pulled from the kernels'
+outputs via the official Kaggle MCP server:
 
-The JSON files currently in this folder are **demo models trained on a 3,000-image
-subset** during automated local testing (test accuracy ≈ 93–97%). They exist so
-the web/mobile apps work end-to-end before the real training runs.
+| file | model | test accuracy | kernel |
+|---|---|---|---|
+| `svc_mnist.json` | RBF-SVM (OvR export, 11k support vectors) | **97.65%** (canonical SVC 97.57%) | `digitlab-01-classical-ml-rbf-svm` |
+| `mlp_mnist.json` | MLP 784→512→256→10 (BN + dropout 0.2) | **99.07%** | `digitlab-02-neural-network-mlp` |
+| `cnn_mnist.json` | CNN width-48, 2 conv blocks (750k params) | **99.57%** | `digitlab-03-deep-learning-cnn` |
 
-**After running the notebooks on Kaggle:** download the `models/` output folder
-from each notebook and replace these three files with the real ones
-(≈60k-image training → SVM ~98.5%, MLP ~98.4%, CNN ~99.5% expected). Then:
+`metrics_*.json` carry the full hyperparameter-search tables, final metrics,
+training curves and artifact hashes. Each notebook also asserts export parity
+(JSON recompute ≡ framework predictions — 100% agreement for all three).
+
+## Swapping in a future re-run
+
+Download the `models/` output folder from each Kaggle notebook and replace the
+files here, then:
 
 ```bash
 cd web    && npm run sync && npm run build     # refreshes web/public/models
 cd mobile && npm run sync                       # refreshes mobile/assets/models
 ```
 
-and redeploy (`gh-pages` branch / rebuild the APK).
+and redeploy (`bash tools/deploy-pages.sh`) / rebuild the APK. The heavy
+framework files (`*.joblib`, `*.pt`) are deliverables too but are not committed
+to git — fetch them from the kernels' outputs when needed.
