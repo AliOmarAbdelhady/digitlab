@@ -10,7 +10,7 @@
 # 2. Baseline classical models for context: multinomial **Logistic Regression** and
 #    **Random Forest** (trained once, default-ish settings — they set the reference bar).
 # 3. **Hyperparameter search** for the main model `sklearn.svm.SVC` (RBF kernel) with
-#    `RandomizedSearchCV` (3-fold CV, 12 sampled configs over the two decisive
+#    `RandomizedSearchCV` (3-fold CV, 16 sampled configs over the two decisive
 #    hyperparameters) on a stratified 15k subsample:
 #    - `C` ∈ log-uniform [1, 30] (regularization strength inverse — margin tightness),
 #    - `gamma` ∈ log-uniform [5e-4, 5e-3] (RBF locality; note `1/784 ≈ 1.3e-3` brackets the sweet spot).
@@ -67,14 +67,14 @@ display(pd.DataFrame(baseline_rows))
 
 # %%
 # ----------------------------------------------- hyperparameter search (SVC)
-# Search on a stratified 15k subsample (60k full fits × 12 configs × 3 folds would
+# Search on a stratified 25k subsample (60k full fits × 16 configs × 3 folds would
 # take ~10× longer for near-identical (C, gamma) selection).
-search_n = min(15000, int(len(X_train) * 0.9))
+search_n = min(25000, int(len(X_train) * 0.9))
 Xs, _, ys, _ = train_test_split(X_train, y_train, train_size=search_n,
                                 stratify=y_train, random_state=SEED)
 
 param_dist = {"C": loguniform(1, 30), "gamma": loguniform(5e-4, 5e-3)}
-n_iter = 3 if SMOKE else 12
+n_iter = 3 if SMOKE else 16
 
 search = RandomizedSearchCV(
     SVC(cache_size=800), param_distributions=param_dist, n_iter=n_iter, cv=3,
