@@ -67,9 +67,12 @@ inside the notebooks, plus the TypeScript test-suite in `core/`).
   equivalent One-vs-Rest SVC ensemble whose per-class coefficients export
   losslessly to the portable JSON (libsvm's native multiclass packing does not);
   prediction agreement between the two is measured and reported.
-- **Chosen hyperparameters**: `C = 3.575`, `gamma = 4.46e-3`
-  (CV accuracy on the search subsample `⟨see metrics_svc.json⟩`; the search was
-  scaled to a stratified 25k subsample / 16 sampled configs in the final run).
+- **Chosen hyperparameters**: `C = 3.575`, `gamma = 4.46e-3` — selected
+  identically by two independent search runs (15k-subsample/12-config pilot and
+  a 25k-subsample/16-config replication), i.e. the optimum is stable across
+  search fidelities. Final metrics: canonical SVC **97.570%**, OvR export
+  **97.650%** (98.76% inter-form agreement), 11,107 support vectors,
+  baselines LogisticRegression 91.69% / RandomForest-300 96.02%.
 
 ## 4 · Model 2 — Neural Network: Multi-Layer Perceptron
 
